@@ -1,18 +1,18 @@
 /**
- * Created by drouar_b on 07/04/2019.
+ * Created by Steve Kreitzer on 03/01/2021
  */
 
 const fs = require('fs');
 const path = require('path');
 const child_process = require('child_process');
 const rmfr = require('rmfr');
-const debug = require('debug')('UnicornTranscoder:Optimizer');
+const debug = require('debug')('UnicornTranscoder:Streamer');
 const rp = require('request-promise-native');
 const SessionManager = require('./session-manager');
 const PlexDirectories = require('../utils/plex-directories');
 const config = require('../config');
 
-class Optimizer {
+class Streamer {
     constructor(sessionId, args, env) {
         this.ffmpeg = null;
         this.session = sessionId.replace('/', '-');
@@ -23,7 +23,7 @@ class Optimizer {
             if (arg === 'aac_lc')
                 return 'aac';
             return arg
-                .replace('{OPTIMIZE_PATH}', this.path)
+                .replace('{STREAM_PATH}', this.path)
                 .replace('{INTERNAL_TRANSCODER}', "http://127.0.0.1:" + config.port + '/')
                 .replace('{INTERNAL_RESOURCES}', PlexDirectories.getPlexResources())
         });
@@ -47,7 +47,7 @@ class Optimizer {
                 fs.mkdir(this.path, (err) => {
                     if (err) {
                         debug(`Failed to create directory ${this.path}`);
-                        SessionManager.stopOptimizer(this.session);
+                        SessionManager.stopStream(this.session);
                     } else {
                         this.startFFMPEG();
                     }
@@ -58,7 +58,7 @@ class Optimizer {
 
     startFFMPEG() {
         debug('Spawn ' + this.session);
-        SessionManager.saveOptimizer(this.session, this);
+        SessionManager.saveStream(this.session, this);
         this.ffmpeg = child_process.spawn(
             PlexDirectories.getPlexTranscoderPath(),
             this.transcoderArgs,
@@ -79,10 +79,10 @@ class Optimizer {
     }
 
     done() {
-        debug('Optimization done ' + this.session);
-        rp(`${config.loadbalancer_address}/api/optimize/${this.session}`, {
+        debug('Stream done ' + this.session);
+        rp(`${config.loadbalancer_address}/api/stream/${this.session}`, {
             method: 'PATCH',
-            body: { status: 'optimized' },
+            body: { status: 'streamed' },
             json: true
         })
             .then(() => {
@@ -93,11 +93,6 @@ class Optimizer {
             })
     }
 
-    sendFile(res, file) {
-        debug(`Downloading ${file} for ${this.session}`);
-        res.download(this.path + path.join('/', file))
-    }
-
     clean() {
         rmfr(this.path)
             .then(() => {
@@ -106,25 +101,17 @@ class Optimizer {
     }
 
     static start(req, res) {
-        debug(`Starting optimizer session ${req.body.session}`);
-        const session = new Optimizer(req.body.session, req.body.args, req.body.env);
+        debug(`Starting streaming session ${req.body.session}`);
+        const session = new Streamer(req.body.session, req.body.args, req.body.env);
         res.json({ status: 'ok' })
     }
 
-    static download(req, res) {
-        const session = SessionManager.getOptimizer(req.params.session);
-        if (typeof session !== 'undefined')
-            session.sendFile(res, req.params.filename);
-        else
-            res.status(404).json({ error: 'Session not found' })
-    }
-
     static stop(req, res) {
-        if (SessionManager.stopOptimizer(req.params.session))
+        if (SessionManager.stopStream(req.params.session))
             res.json({ status: 'ok' });
         else
             res.status(404).json({ error: 'Session not found' });
     }
 }
 
-module.exports = Optimizer;
+module.exports = Streamer;

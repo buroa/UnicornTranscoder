@@ -14,6 +14,7 @@ const ffmpeg = require('../core/ffmpeg');
 const proxy = require('../core/proxy');
 const progress = require('../core/progress');
 const optimizer = require('../core/optimizer');
+const streamer = requre('../core/streamer');
 const SessionManager = require('../core/session-manager');
 
 //Dash routes
@@ -60,5 +61,9 @@ router.all('/log', bodyParser.text({ type: () => {return true}, limit: '50mb' })
 router.post('/api/optimize', bodyParser.json(), optimizer.start);
 router.get('/api/optimize/:session/:filename', optimizer.download);
 router.delete('/api/optimize/:session', optimizer.stop);
+
+// Streaming
+router.post('/api/stream', bodyParser.json(), streaming.start);
+router.delete('/api/stream/:session', optimizer.stop);
 
 module.exports = router;
