@@ -9,7 +9,7 @@ const config = require('../config');
 const utils = require('../utils/utils');
 const PlexDirectories = require('../utils/plex-directories');
 
-class Dash {
+class Tune {
     static serve(req, res) {
         let sessionId = req.query.session;
 
