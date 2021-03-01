@@ -22,10 +22,10 @@ router.get('/:formatType/:/transcode/universal/dash/:sessionId/:streamId/initial
 router.get('/:formatType/:/transcode/universal/dash/:sessionId/:streamId/:partId.m4s', dash.serveChunk);
 
 //live tv routes
-router.post('/livetv/dvrs/:dvrId/channels/:channelId/tune', m3u8.serve);
-router.get('/livetv/sessions/:sessionId/:streamId/index.m3u8', m3u8.serve);
-router.get('/livetv/sessions/:sessionId/:streamId/:partId.ts', m3u8.serveChunk);
-router.get('/livetv/sessions/:sessionId/:streamId/:partId.vtt', m3u8.serveSubtitles);
+router.post('/livetv/dvrs/:dvrId/channels/:channelId/tune', tune.serve);
+router.get('/livetv/sessions/:sessionId/:streamId/index.m3u8', tune.serve);
+router.get('/livetv/sessions/:sessionId/:streamId/:partId.ts', tune.serveChunk);
+router.get('/livetv/sessions/:sessionId/:streamId/:partId.vtt', tune.serveSubtitles);
 
 //m3u8 mode
 router.get('/:formatType/:/transcode/universal/session/:sessionId/base/index.m3u8', m3u8.serve);
