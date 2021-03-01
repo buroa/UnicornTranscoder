@@ -80,4 +80,4 @@ class Tune {
     }
 }
 
-module.exports = Dash;
+module.exports = Tune;
