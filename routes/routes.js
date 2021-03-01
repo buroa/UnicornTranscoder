@@ -63,7 +63,7 @@ router.get('/api/optimize/:session/:filename', optimizer.download);
 router.delete('/api/optimize/:session', optimizer.stop);
 
 // Streaming
-router.post('/api/stream', bodyParser.json(), streaming.start);
-router.delete('/api/stream/:session', optimizer.stop);
+router.post('/api/stream', bodyParser.json(), streamer.start);
+router.delete('/api/stream/:session', streamer.stop);
 
 module.exports = router;
