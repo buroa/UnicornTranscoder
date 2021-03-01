@@ -14,7 +14,7 @@ const ffmpeg = require('../core/ffmpeg');
 const proxy = require('../core/proxy');
 const progress = require('../core/progress');
 const optimizer = require('../core/optimizer');
-const streamer = requre('../core/streamer');
+const streamer = require('../core/streamer');
 const SessionManager = require('../core/session-manager');
 
 //Dash routes
