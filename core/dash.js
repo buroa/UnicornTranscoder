@@ -8,6 +8,7 @@ const SessionManager = require('./session-manager');
 const config = require('../config');
 const utils = require('../utils/utils');
 const PlexDirectories = require('../utils/plex-directories');
+const fs = require('fs');
 
 class Dash {
     static serve(req, res) {
@@ -48,7 +49,14 @@ class Dash {
                 }
             }, req.params.streamId, true);
         } else {
-            SessionManager.restartSession(sessionId, 'DASH', res);
+            let file = PlexDirectories.getTemp() + sessionId + "/init-stream" + req.params.streamId + ".m4s";
+            fs.access(file, fs.F_OK, (err) => {
+                if (err) {
+                    SessionManager.restartSession(sessionId, 'DASH', res);
+                }
+                debug('Serving init-stream' + req.params.streamId + '.m4s for session ' + sessionId);
+                res.sendFile(file);
+            })
         }
     }
 
@@ -72,7 +80,14 @@ class Dash {
                 }
             }, req.params.streamId);
         } else {
-            SessionManager.restartSession(sessionId, 'DASH', res);
+            let file = PlexDirectories.getTemp() + sessionId + "/chunk-stream" + req.params.streamId + "-" + utils.pad(parseInt(req.params.partId) + 1, 5) + ".m4s";
+            fs.access(file, fs.F_OK, (err) => {
+                if (err) {
+                    SessionManager.restartSession(sessionId, 'DASH', res);
+                }
+                debug('Serving chunk-stream' + req.params.streamId + "-" + utils.pad(parseInt(req.params.partId) + 1, 5) + '.m4s for session ' + sessionId);
+                res.sendFile(file);
+            })
         }
     }
 }

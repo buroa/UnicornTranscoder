@@ -22,7 +22,6 @@ router.get('/:formatType/:/transcode/universal/dash/:sessionId/:streamId/initial
 router.get('/:formatType/:/transcode/universal/dash/:sessionId/:streamId/:partId.m4s', dash.serveChunk);
 
 //live tv routes
-router.post('/livetv/dvrs/:dvrId/channels/:channelId/tune', dash.serve);
 router.get('/livetv/sessions/:sessionId/:streamId/index.m3u8', proxy);
 router.get('/livetv/sessions/:sessionId/:streamId/initial.mp4', dash.serveInit);
 router.get('/livetv/sessions/:sessionId/:streamId/:partId.ts', dash.serveChunk);
