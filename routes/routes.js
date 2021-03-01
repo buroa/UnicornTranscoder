@@ -7,7 +7,6 @@ const bodyParser = require('body-parser');
 const router = express.Router();
 
 const dash = require('../core/dash');
-const tune = require('../core/tune');
 const m3u8 = require('../core/m3u8');
 const stream = require('../core/stream');
 const download = require('../core/download');
