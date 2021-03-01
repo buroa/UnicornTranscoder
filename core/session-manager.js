@@ -113,7 +113,7 @@ class SessionManager {
 
     stopStream(sessionId) {
         if (typeof this.streamStore[sessionId] !== 'undefined') {
-            this.streamStore[sessionId].clean();
+            this.streamStore[sessionId].killInstance();
             delete this.streamStore[sessionId];
             return true;
         }
