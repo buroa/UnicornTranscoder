@@ -41,6 +41,10 @@ class PlexDirectories {
     static getTemp() {
         return path.resolve(config.transcoder.temp_folder) + '/';
     }
+
+    static getDriPath() {
+        return path.resolve(this.getPlexFolder(), 'lib/dri');
+    }
 }
 
 module.exports = PlexDirectories;

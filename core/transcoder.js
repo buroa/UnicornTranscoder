@@ -61,6 +61,7 @@ class Transcoder {
                     this.transcoderEnv = Object.create(process.env);
                     this.transcoderEnv.LD_LIBRARY_PATH = PlexDirectories.getPlexLibraryFolder();
                     this.transcoderEnv.FFMPEG_EXTERNAL_LIBS = PlexDirectories.getCodecFolder();
+                    this.transcoderEnv.LIBVA_DRIVERS_PATH = PlexDirectories.getDriPath();
                     this.transcoderEnv.XDG_CACHE_HOME = PlexDirectories.getTemp();
                     this.transcoderEnv.XDG_DATA_HOME = PlexDirectories.getPlexResources();
                     this.transcoderEnv.EAE_ROOT = PlexDirectories.getTemp();

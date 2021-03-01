@@ -8,18 +8,13 @@ const SessionManager = require('./session-manager');
 const config = require('../config');
 const utils = require('../utils/utils');
 const PlexDirectories = require('../utils/plex-directories');
-const fs = require('fs');
 
 class Dash {
     static serve(req, res) {
         let sessionId = req.query.session;
 
         if (typeof sessionId === 'undefined')
-            sessionId = req.query['X-Plex-Session-Identifier'];
-
-        if (typeof sessionId === 'undefined')
             return res.status(400).send('Invalid session id');
-
         debug(sessionId);
 
         SessionManager.killSession(sessionId, () => {
@@ -29,9 +24,6 @@ class Dash {
 
     static serveInit(req, res) {
         let sessionId = req.params.sessionId;
-
-        if (typeof sessionId === 'undefined')
-            sessionId = req.query['X-Plex-Session-Identifier'];
 
         let transcoder = SessionManager.getSession(sessionId);
         if (transcoder !== null) {
@@ -49,22 +41,12 @@ class Dash {
                 }
             }, req.params.streamId, true);
         } else {
-            let file = PlexDirectories.getTemp() + sessionId + "/init-stream" + req.params.streamId + ".m4s";
-            fs.access(file, fs.F_OK, (err) => {
-                if (err) {
-                    SessionManager.restartSession(sessionId, 'DASH', res);
-                }
-                debug('Serving init-stream' + req.params.streamId + '.m4s for session ' + sessionId);
-                res.sendFile(file);
-            })
+            SessionManager.restartSession(sessionId, 'DASH', res);
         }
     }
 
     static serveChunk(req, res) {
         let sessionId = req.params.sessionId;
-
-        if (typeof sessionId === 'undefined')
-            sessionId = req.query['X-Plex-Session-Identifier'];
 
         let transcoder = SessionManager.getSession(sessionId);
         if (transcoder !== null) {
@@ -80,14 +62,7 @@ class Dash {
                 }
             }, req.params.streamId);
         } else {
-            let file = PlexDirectories.getTemp() + sessionId + "/chunk-stream" + req.params.streamId + "-" + utils.pad(parseInt(req.params.partId) + 1, 5) + ".m4s";
-            fs.access(file, fs.F_OK, (err) => {
-                if (err) {
-                    SessionManager.restartSession(sessionId, 'DASH', res);
-                }
-                debug('Serving chunk-stream' + req.params.streamId + "-" + utils.pad(parseInt(req.params.partId) + 1, 5) + '.m4s for session ' + sessionId);
-                res.sendFile(file);
-            })
+            SessionManager.restartSession(sessionId, 'DASH', res);
         }
     }
 }

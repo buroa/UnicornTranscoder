@@ -24,7 +24,7 @@ router.get('/:formatType/:/transcode/universal/dash/:sessionId/:streamId/:partId
 //live tv routes
 router.get('/livetv/sessions/:sessionId/:streamId/index.m3u8', proxy);
 router.get('/livetv/sessions/:sessionId/:streamId/initial.mp4', dash.serveInit);
-router.get('/livetv/sessions/:sessionId/:streamId/:partId.ts', dash.serveChunk);
+router.get('/livetv/sessions/:sessionId/:streamId/:partId.m4s', dash.serveChunk);
 
 //m3u8 mode
 router.get('/:formatType/:/transcode/universal/session/:sessionId/base/index.m3u8', m3u8.serve);
