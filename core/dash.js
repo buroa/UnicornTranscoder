@@ -14,7 +14,11 @@ class Dash {
         let sessionId = req.query.session;
 
         if (typeof sessionId === 'undefined')
+            sessionId = req.query['X-Plex-Session-Identifier'];
+
+        if (typeof sessionId === 'undefined')
             return res.status(400).send('Invalid session id');
+
         debug(sessionId);
 
         SessionManager.killSession(sessionId, () => {
@@ -24,6 +28,9 @@ class Dash {
 
     static serveInit(req, res) {
         let sessionId = req.params.sessionId;
+
+        if (typeof sessionId === 'undefined')
+            sessionId = req.query['X-Plex-Session-Identifier'];
 
         let transcoder = SessionManager.getSession(sessionId);
         if (transcoder !== null) {
@@ -47,6 +54,9 @@ class Dash {
 
     static serveChunk(req, res) {
         let sessionId = req.params.sessionId;
+
+        if (typeof sessionId === 'undefined')
+            sessionId = req.query['X-Plex-Session-Identifier'];
 
         let transcoder = SessionManager.getSession(sessionId);
         if (transcoder !== null) {
