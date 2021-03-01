@@ -1,16 +1,17 @@
 /**
  * Created by Steve Kreitzer on 03/01/2021
  */
-
-const fs = require('fs');
-const path = require('path');
-const child_process = require('child_process');
-const rmfr = require('rmfr');
-const debug = require('debug')('UnicornTranscoder:Streamer');
-const rp = require('request-promise-native');
 const SessionManager = require('./session-manager');
-const PlexDirectories = require('../utils/plex-directories');
+const child_process = require('child_process');
+const debug = require('debug')('UnicornTranscoder:Transcoder');
+const fs = require('fs');
+const rp = require('request-promise-native');
+const uuid = require('uuid/v4');
 const config = require('../config');
+const ChunkStore = require('../utils/chunkStore');
+const rmfr = require('rmfr');
+const PlexDirectories = require('../utils/plex-directories');
+const utils = require('../utils/utils');
 
 class Streamer {
     constructor(sessionId, req, res, streamOffset) {
