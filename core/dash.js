@@ -15,11 +15,17 @@ class Dash {
 
         if (typeof sessionId === 'undefined')
             return res.status(400).send('Invalid session id');
+        
         debug(sessionId);
 
-        SessionManager.killSession(sessionId, () => {
+        // we do not have a current session for this transcoder
+        let transcoder = SessionManager.getSession(sessionId);
+        if (typeof transcoder === 'undefined') {
+            debug('Starting new transcoder for ' + sessionId);
             SessionManager.saveSession(new Transcoder(sessionId, req, res));
-        })
+        } else {
+            debug('Already serving ' + sessionId);
+        }
     }
 
     static serveInit(req, res) {
