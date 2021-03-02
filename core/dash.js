@@ -12,7 +12,7 @@ const PlexDirectories = require('../utils/plex-directories');
 class Dash {
     static stream(req, res) {
         let sessionId = req.body.session;
-        debug(`Starting optimizer session ${sessionId}`);
+        debug(`Starting transcode session ${sessionId}`);
         SessionManager.killSession(sessionId, () => {
             SessionManager.saveSession(new Transcoder(sessionId, req, res));
         })
