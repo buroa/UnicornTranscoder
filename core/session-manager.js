@@ -13,7 +13,6 @@ class SessionManager {
         this.downloads = [];
         this.transcoderStore = {};
         this.optimizerStore = {};
-        this.streamStore = {};
         this.sendStats();
     }
 
@@ -100,24 +99,6 @@ class SessionManager {
             this.downloads.splice(index, 1);
             this.sendStats();
         }
-    }
-
-    saveStream(sessionId, stream) {
-        this.streamStore[sessionId] = stream;
-        this.sendStats();
-    }
-
-    getStream(sessionId) {
-        return this.streamStore[sessionId]
-    }
-
-    stopStream(sessionId) {
-        if (typeof this.streamStore[sessionId] !== 'undefined') {
-            this.streamStore[sessionId].killInstance();
-            delete this.streamStore[sessionId];
-            return true;
-        }
-        return false;
     }
 
     saveOptimizer(sessionId, optimizer) {

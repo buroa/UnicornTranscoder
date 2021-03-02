@@ -14,7 +14,6 @@ const ffmpeg = require('../core/ffmpeg');
 const proxy = require('../core/proxy');
 const progress = require('../core/progress');
 const optimizer = require('../core/optimizer');
-const streamer = require('../core/streamer');
 const SessionManager = require('../core/session-manager');
 
 //Dash routes
@@ -63,7 +62,6 @@ router.get('/api/optimize/:session/:filename', optimizer.download);
 router.delete('/api/optimize/:session', optimizer.stop);
 
 // Streaming
-router.post('/api/stream', bodyParser.json(), streamer.start);
-router.delete('/api/stream/:session', streamer.stop);
+router.post('/api/stream', bodyParser.json(), dash.serve);
 
 module.exports = router;
