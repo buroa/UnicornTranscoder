@@ -13,6 +13,10 @@ class Dash {
     static serve(req, res) {
         let sessionId = req.query.session;
 
+        // fallback get session
+        if (typeof sessionId === 'undefined')
+            let sessionId = req.body.session;
+        
         if (typeof sessionId === 'undefined')
             return res.status(400).send('Invalid session id');
         
