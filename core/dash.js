@@ -32,7 +32,7 @@ class Dash {
                 SessionManager.saveSession(new Transcoder(sessionId, req, res));
             })
         } else {
-            debug("What do I do here? [[HELP]] ?? SEND MPD????");
+            res.json({ status: 'ok' })
         }
     }
 
