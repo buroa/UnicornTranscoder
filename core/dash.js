@@ -11,10 +11,11 @@ const PlexDirectories = require('../utils/plex-directories');
 
 class Dash {
     static serve(req, res) {
-        let sessionId = req.query.session;
+        let sessionId = null;
 
-        // fallback get session
-        if (typeof sessionId === 'undefined')
+        if (typeof req.query !== 'undefined' && typeof req.query.session !== 'undefined')
+            sessionId = req.query.session;
+        else if (typeof req.body !== 'undefined' && typeof req.body.session !== 'undefined')
             sessionId = req.body.session;
         
         if (typeof sessionId === 'undefined')
