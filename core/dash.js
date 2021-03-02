@@ -10,26 +10,29 @@ const utils = require('../utils/utils');
 const PlexDirectories = require('../utils/plex-directories');
 
 class Dash {
-    static serve(req, res) {
-        let sessionId = null;
+    static stream(req, res) {
+        let sessionId = req.body.session;
+        debug(`Starting optimizer session ${sessionId}`);
+        SessionManager.killSession(sessionId, () => {
+            SessionManager.saveSession(new Transcoder(sessionId, req, res));
+        })
+        res.json({ status: 'ok' })
+    }
 
-        if (typeof req.query !== 'undefined' && typeof req.query.session !== 'undefined')
-            sessionId = req.query.session;
-        else if (typeof req.body !== 'undefined' && typeof req.body.session !== 'undefined')
-            sessionId = req.body.session;
-        
+    static serve(req, res) {
+        let sessionId = req.query.session;
+
         if (typeof sessionId === 'undefined')
             return res.status(400).send('Invalid session id');
-        
         debug(sessionId);
 
-        // we do not have a current session for this transcoder
         let transcoder = SessionManager.getSession(sessionId);
-        if (typeof transcoder === 'undefined') {
-            debug('Starting new transcoder for ' + sessionId);
-            SessionManager.saveSession(new Transcoder(sessionId, req, res));
+        if (transcoder === null) {
+            SessionManager.killSession(sessionId, () => {
+                SessionManager.saveSession(new Transcoder(sessionId, req, res));
+            })
         } else {
-            debug('Already serving ' + sessionId);
+            debug("What do I do here? [[HELP]] ?? SEND MPD????");
         }
     }
 
